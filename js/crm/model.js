@@ -7,7 +7,7 @@ var model = {
 model.addchildModel = function(){
     var $_addSmallModelTopBtn = $('.J-btn-addsmodel-tb'),
         $_addSmallModelLeftBtn = $('.J-btn-addsmodel-lr'),
-        modelIdArr = [];
+        modelId = 0;
         
     
     //  垂直添加小模块
@@ -38,40 +38,45 @@ model.addchildModel = function(){
     
     //  水平添加小模块
     function horizontalAppend($_parent){
-        var smallModelArr = [],
             $_parentW = parseFloat($_parent.css('width')),
             $_parentH = parseFloat($_parent.css('height')),
+            $_parentT = parseFloat($_parent.css('top'))||0,
+            $_parentL = parseFloat($_parent.css('left'))||0,
             $_smallW =  $_parentW / 2;
             
-        $_parent.addClass('clearfix');
-        
         for(var i = 0 ;i < 2 ; i++){
             var $_smallModel = $('.template-box .J-model').clone(true);
             
-            $_smallModel.addClass('small-model-h h fl');
+            $_smallModel.addClass('small-model-h po');
             
             $_smallModel.css({
                 width:$_smallW + 'px',
                 height:$_parentH + 'px',
-                margin:'0px 0px 0px -1px'
+                margin:'0px 0px 0px -1px',
+                top:$_parentT + 'px',
+                left:($_parentL+i*$_smallW)+'px'
             });
-            smallModelArr.push($_smallModel);
             
-            
-            addmodelId($_smallModel);
-            $_smallModel.appendTo($_parent);
+            addmodelId($_smallModel,$_parent,i);
+            $_smallModel.insertAfter($_parent);
         }
+        $_parent.remove();
         
         $_parent.children('.J-btn-addsmodel-tb').hide();
         $_parent.children('.J-btn-addsmodel-lr').hide();
-        return $(smallModelArr);    
+        
     }
     
     //  为每个小模块编号
-    function addmodelId($_self){
-        var modellen = modelIdArr.length;
-        modelIdArr.push(modellen);
-        $_self.attr('modelId',modellen);
+    function addmodelId($_self,$_parent,i){
+        modelId++;
+        $_self.attr('modelId',modelId);
+        if(i == 0){
+	        $_self.attr('nei',modelId+1);
+	        console.log($_self.attr('nei'));
+        }else{
+        	$_self.attr('nei',$_parent.attr('nei')||0);
+        }
     };  
 
     var storageNeighbourArr = [],                   //  用来存储左右相邻的小模块的数组
@@ -101,22 +106,25 @@ model.resizeModel = function(){
         $_elongate = $('.J-elongate'),
         hDoms = neighbourObj.hArr;
     
-    function hneibi(self){
-        var $_self = self;
-        for(var i = 0 ,len = hDoms.length; i < len; i++){
-            //  转换dom比较 否则context不同
-            if(hDoms[i][0][0] == $_self[0]){
-                return i;
-                break;
-            }
-        }
-    };
+    // function hneibi(self){
+        // var $_self = self;
+        // for(var i = 0 ,len = hDoms.length; i < len; i++){
+            // //  转换dom比较 否则context不同
+            // if(hDoms[i][0][0] == $_self[0]){
+                // return i;
+            // }
+        // }
+    // };
+//     
+    // $_elongate.mousedown(function(){
+        // var $_self = $(this).parent();
+        // var z = hneibi($_self);
+        // console.log(z);
+//         
+    // });
+//     
     
-    $_elongate.mousedown(function(){
-        var $_self = $(this).parent();
-        z = hneibi($_self);
-    });
-    console.log(z);
+    
     /*$_elongate.bind('mousedrag',function(e,dif){   
         
         //  判断当前dom的邻居是谁
@@ -134,6 +142,11 @@ model.resizeModel = function(){
             }
         }
     });*/
+   
+   
+   
+   
+   
 };
 
 
