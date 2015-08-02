@@ -39,13 +39,9 @@
 	margin-top:-50%;
 	color:#FFF;
 }
-.small-model-v{
+.small-model{
 	border:none;
 	border-bottom:1px solid #E2E2E2;
-}
-.small-model-h{
-	border:none;
-	border-left:1px solid #E2E2E2;
 }
 .elongate{
 	right:0px;
