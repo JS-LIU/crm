@@ -78,7 +78,7 @@ model.resizeModel = function(){
    			$_self = $(this),
    			$_small_model = $_self.parent();
    			
-   		
+   		//	找到相邻的的等高盒子
    		
 		$_self.mousemove(function(e){
 			e = e||window.event;
@@ -88,6 +88,8 @@ model.resizeModel = function(){
 			if(addW < 0){
 				//	addW 为负值 所以要【-=】负负得正
 				$_small_model.css('width','-='+addW);
+				//	相邻的的等高盒子 一起变化
+				
 			}
 		});
     }).mouseup(function(){
