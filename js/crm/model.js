@@ -69,7 +69,7 @@ VerticalAppend.prototype.appendModel = function(){
 
 model.resizeModel = function(){
 	var $_elongate = $('.J-elongate');
-        
+         
 	$_elongate.mousedown(function(e){
 		
    		e = e||window.event;
@@ -79,8 +79,7 @@ model.resizeModel = function(){
    			$_small_model = $_self.parent();
    			
    		//	找到相邻的的等高盒子
-   		
-		$_self.mousemove(function(e){
+   		function move(e){
 			e = e||window.event;
 				x = x1 || x,
 				x1 = e.pageX;
@@ -91,10 +90,11 @@ model.resizeModel = function(){
 				//	相邻的的等高盒子 一起变化
 				
 			}
+		}
+		$_self.bind('mousemove',move).mouseup(function(){
+			$_self.unbind('mousemove',move);
 		});
-    }).mouseup(function(){
-   		$_elongate.unbind('mousemove');
-    });
+   });
     
     function findEqual(){
     	
