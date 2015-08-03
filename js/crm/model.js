@@ -19,9 +19,9 @@ model.AddchildModel.prototype.removeParent = function(){
 function HorizontalAppend($_parent){
 	model.AddchildModel.call(this,$_parent);
     this.$_parentL = parseFloat($_parent.css('left'))||0;
-	this.sm_width =  parseFloat($_parent.css('width')) / 2,		//	新盒子的宽度
-    this.sm_height = parseFloat($_parent.css('height')),		//	新盒子的高度	
-    this.sm_top = parseFloat($_parent.css('top'))||0;			//	新盒子的TOP
+	this.sm_width =  parseFloat($_parent.css('width')) / 2;		//	新盒子的宽度
+    this.sm_height = parseFloat($_parent.css('height'));			//	新盒子的高度
+    this.sm_top = parseFloat($_parent.css('top'))||0;				//	新盒子的TOP
 }
 
 HorizontalAppend.prototype = new model.AddchildModel();
@@ -51,7 +51,7 @@ function VerticalAppend($_parent){
 	model.AddchildModel.call(this,$_parent);
     this.$_parentT = parseFloat($_parent.css('top'))||0;
 	this.sm_width =  parseFloat($_parent.css('width'));			//	新盒子的宽度
-    this.sm_height = parseFloat($_parent.css('height')) / 2;	//	新盒子的高度	
+    this.sm_height = parseFloat($_parent.css('height')) / 2;		//	新盒子的高度
     this.sm_left = parseFloat($_parent.css('left'))||0;			//	新盒子的TOP
 }
 
