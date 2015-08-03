@@ -7,7 +7,21 @@ var model = {
 model.AddchildModel = function($_parent){
 	this.$_parent = $_parent;    
 };
-
+model.AddchildModel.prototype.addModel = function(){
+	var $_smallModel = $('.template-box .J-model').clone(true);
+	$_smallModel.addClass('small-model po').css({
+        width:this.sm_width + 'px',
+        height:this.sm_height + 'px',
+        top:this.sm_top + 'px',
+        left:this.sm_left + 'px',
+        margin:'0px 0px 0px -1px'
+	}).data('modelStyle',{
+    	width:this.sm_width,
+    	height:this.sm_height,
+    	top:this.sm_top,
+    	left:this.sm_left
+    }).insertAfter(this.$_parent);
+};
 model.AddchildModel.prototype.removeParent = function(){
 	this.$_parent.remove();
 	this.$_parent.children('.J-btn-addsmodel-tb').hide();
@@ -28,21 +42,9 @@ HorizontalAppend.prototype = new model.AddchildModel();
 HorizontalAppend.prototype.coustructor = HorizontalAppend;
 HorizontalAppend.prototype.appendModel = function(){
 	for(var i = 0 ;i < 2 ; i++){
-		var $_smallModel = $('.template-box .J-model').clone(true);
-	   
 	    this.sm_left = (this.$_parentL + i * this.sm_width);	//	新盒子的LEFT	
-	    $_smallModel.addClass('small-model po').css({
-	        width:this.sm_width + 'px',
-	        height:this.sm_height + 'px',
-	        top:this.sm_top + 'px',
-	        left:this.sm_left + 'px',
-	        margin:'0px 0px 0px -1px'
-    	}).data('modelStyle',{
-        	width:this.sm_width,
-        	height:this.sm_height,
-        	top:this.sm_top,
-        	left:this.sm_left
-        }).insertAfter(this.$_parent);
+	    this.addModel();
+		
    }
 };
 
@@ -59,25 +61,65 @@ VerticalAppend.prototype = new model.AddchildModel();
 VerticalAppend.prototype.coustructor = HorizontalAppend;
 VerticalAppend.prototype.appendModel = function(){
 	for(var i = 0 ;i < 2 ; i++){
-		var $_smallModel = $('.template-box .J-model').clone(true);
-	    this.sm_top = (this.$_parentT + i * this.sm_height);	//	新盒子的LEFT	
-	    $_smallModel.addClass('small-model po').css({
-	        width:this.sm_width + 'px',
-	        height:this.sm_height + 'px',
-	        top:this.sm_top + 'px',
-	        left:this.sm_left + 'px',
-	        margin:'0px 0px 0px -1px'
-    	}).data('modelStyle',{
-        	width:this.sm_width,
-        	height:this.sm_height,
-        	top:this.sm_top,
-        	left:this.sm_left
-        }).insertAfter(this.$_parent);
+	    this.sm_top = (this.$_parentT + i * this.sm_height);	//	新盒子的TOP
+	    this.addModel();
    }
 };
 
 
 model.resizeModel = function(){
-    var neighbourObj = model.addchildModel(),
-        $_elongate = $('.J-elongate');
+	var $_elongate = $('.J-elongate');
+        
+	$_elongate.mousedown(function(e){
+		
+   		e = e||window.event;
+   		var x = e.pageX,
+   			x1,
+   			$_self = $(this),
+   			$_small_model = $_self.parent();
+   			
+   		
+   		
+		$_self.mousemove(function(e){
+			e = e||window.event;
+				x = x1 || x,
+				x1 = e.pageX;
+			var addW = x - x1;
+			if(addW < 0){
+				//	addW 为负值 所以要【-=】负负得正
+				$_small_model.css('width','-='+addW);
+			}
+		});
+    }).mouseup(function(){
+   		$_elongate.unbind('mousemove');
+    });
+    
+    function findEqual(){
+    	
+    }
+        
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
