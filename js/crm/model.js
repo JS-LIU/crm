@@ -15,7 +15,7 @@ model.AddchildModel.prototype.addModel = function(){
         top:this.sm_top + 'px',
         left:this.sm_left + 'px',
         margin:'0px 0px 0px -1px'
-	}).data('modelStyle',{
+	}).attr({
     	width:this.sm_width,
     	height:this.sm_height,
     	top:this.sm_top,
@@ -33,7 +33,7 @@ model.AddchildModel.prototype.removeParent = function(){
 function HorizontalAppend($_parent){
 	model.AddchildModel.call(this,$_parent);
     this.$_parentL = parseFloat($_parent.css('left'))||0;
-	this.sm_width =  parseFloat($_parent.css('width')) / 2;		//	新盒子的宽度
+	this.sm_width =  parseFloat($_parent.css('width')) / 2;			//	新盒子的宽度
     this.sm_height = parseFloat($_parent.css('height'));			//	新盒子的高度
     this.sm_top = parseFloat($_parent.css('top'))||0;				//	新盒子的TOP
 }
@@ -42,7 +42,7 @@ HorizontalAppend.prototype = new model.AddchildModel();
 HorizontalAppend.prototype.coustructor = HorizontalAppend;
 HorizontalAppend.prototype.appendModel = function(){
 	for(var i = 0 ;i < 2 ; i++){
-	    this.sm_left = (this.$_parentL + i * this.sm_width);	//	新盒子的LEFT	
+	    this.sm_left = (this.$_parentL + i * this.sm_width);		//	新盒子的LEFT
 	    this.addModel();
 		
    }
@@ -52,16 +52,16 @@ HorizontalAppend.prototype.appendModel = function(){
 function VerticalAppend($_parent){
 	model.AddchildModel.call(this,$_parent);
     this.$_parentT = parseFloat($_parent.css('top'))||0;
-	this.sm_width =  parseFloat($_parent.css('width'));			//	新盒子的宽度
+	this.sm_width =  parseFloat($_parent.css('width'));				//	新盒子的宽度
     this.sm_height = parseFloat($_parent.css('height')) / 2;		//	新盒子的高度
-    this.sm_left = parseFloat($_parent.css('left'))||0;			//	新盒子的TOP
+    this.sm_left = parseFloat($_parent.css('left'))||0;				//	新盒子的TOP
 }
 
 VerticalAppend.prototype = new model.AddchildModel();
 VerticalAppend.prototype.coustructor = HorizontalAppend;
 VerticalAppend.prototype.appendModel = function(){
 	for(var i = 0 ;i < 2 ; i++){
-	    this.sm_top = (this.$_parentT + i * this.sm_height);	//	新盒子的TOP
+	    this.sm_top = (this.$_parentT + i * this.sm_height);		//	新盒子的TOP
 	    this.addModel();
    }
 };
@@ -79,6 +79,9 @@ model.resizeModel = function(){
    			$_small_model = $_self.parent();
    			
    		//	找到相邻的的等高盒子
+		findEqual($_self);
+
+
    		function move(e){
 			e = e||window.event;
 				x = x1 || x,
@@ -94,12 +97,19 @@ model.resizeModel = function(){
 		$_self.bind('mousemove',move).mouseup(function(){
 			$_self.unbind('mousemove',move);
 		});
-   });
+    });
     
-    function findEqual(){
-    	
-    }
-        
+    function findEqual($_self){
+		var neiLeft = parseFloat($_self.attr('left')) + parseFloat($_self.attr('width'));	//	邻居的left属性的值
+		var $_neiDom = $('.J-model[left=' + neiLeft + ']');
+		var $_neiDom_h = parseFloat($_neiDom.attr('height'));
+		var $_self_h = parseFloat($_self.attr('height'));
+		//	tddwrite just one
+		if($_neiDom_h == $_self_h){
+			$_neiDom.addClass('shuldIncrease');
+		}
+	}
+
 };
 
 
