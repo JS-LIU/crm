@@ -69,36 +69,82 @@ VerticalAppend.prototype.appendModel = function(){
 
 
 model.resizeModel = function(){
-	var $_elongate = $('.J-elongate');
+	var $_elongate = $('.J-elongate'),
+		$_heighten = $('.J-heighten	');
 
 	$_elongate.mousedown(function(e){
 
    		e = e||window.event;
    		var x = e.pageX,
-   			x1,
+			x1,
    			$_self = $(this),
    			$_small_model = $_self.parent();
-
    		//	找到相邻的的等高盒子
-		findNeaest($_small_model);
+		var $_neaestDom = findNeaest($_small_model),
+			selfT = parseFloat($_small_model.attr('top')),
+			selfL = parseFloat($_small_model.attr('left')),
+			neiT = parseFloat($_neaestDom.attr('top')),
+			neiL = parseFloat($_neaestDom.attr('left')),
+			selfB =  parseFloat($_small_model.attr('bottom')),
+			neiB =  parseFloat($_neaestDom.attr('bottom'));
+		console.log($_neaestDom);
+		findResizeDomUp($_neaestDom,$_small_model,selfT,neiT);
+		findResizeDomDown($_neaestDom,$_small_model,selfB,neiB);
 
-
+		var $_selfHereDom = $('.needResize[left='+ selfL +']');
+		var $_neiHereDom = $('.needResize[left='+ neiL +']');
    		function move(e){
 			e = e||window.event;
-				x = x1 || x,
-				x1 = e.pageX;
+			x = x1 || x,
+			x1 = e.pageX;
 			var addW = x - x1;
 			if(addW < 0){
 				//	addW 为负值 所以要【-=】负负得正
 				$_small_model.css('width','-='+addW);
 				//	相邻的的等高盒子 一起变化
+				$_selfHereDom.css('width','-='+addW);
+
+				$_neiHereDom.css('width','+='+addW);
+				$_neiHereDom.css('left','-='+addW);
+
 
 			}
 		}
 		$_self.bind('mousemove',move).mouseup(function(){
+			var self_newW = parseFloat($_small_model.css('width'));
+			$_small_model.attr('width',self_newW);
+			for(var i = 0,len = $('.needResize').length;i < len;i++){
+				var other_newW = parseFloat($('.needResize').eq(i).css('width'));
+				var other_left = parseFloat($('.needResize').eq(i).css('left'));
+				$('.needResize').eq(i).attr({'width':other_newW,'left':other_left});
+			}
+
+			//$('.needResize').removeClass('needResize');
+
 			$_self.unbind('mousemove',move);
 		});
     });
+
+	$_heighten.mousedown(function(e){
+		e = e||window.event;
+		var y = e.pageY,
+			y1,
+			$_self = $(this),
+			$_small_model = $_self.parent();
+		function move(e){
+			e = e||window.event;
+			y = y1 || y,
+			y1 = e.pageY;
+			var addH = y - y1;
+			if(addH < 0){
+				$_small_model.css('height','-='+addH);
+			}
+		}
+		$_self.bind('mousemove',move).mouseup(function(){
+			$('.needResize').removeClass('needResize');
+			$_self.unbind('mousemove',move);
+		});
+	})
 
 	//	找到最近的相邻节点
     function findNeaest($_self){
@@ -116,26 +162,50 @@ model.resizeModel = function(){
 		var difMin = Math.min.apply(Object,topArr);
 		var index = topArr.indexOf(difMin);
 		var $_nearestDom = $_neiDom.eq(index);												//	离被移动的节点最近的节点
+		if($_nearestDom.attr('top') == $_self.attr('bottom')){
+			var btm = parseFloat($_nearestDom.attr('top'));
+			$_nearestDom = $('.J-model[left=' + neiLeft + '][bottom = ' + btm +']');
+		}
 		$_nearestDom.addClass('needResize');
+		return $_nearestDom;
 	}
 
 	//	找到所有需要被移动的节点
-	function findResizeDom($_nearestDom,$_self,selfT){
-		selfT = parseFloat($_self.attr('top'))||selfT;
-		var nearestDomH = parseFloat($_nearestDom.attr('height'));
-		var selfH = parseFloat($_self.attr('height'));
+	function findResizeDomUp($_nearestDom,$_self,selfT,neiT){
+		neiT = parseFloat($_nearestDom.attr('top'));
 		var selfL = parseFloat($_self.attr('left'));
-		var neiT = parseFloat($_nearestDom.attr('top'));
 		//	判断 哪个盒子在上面
 		if(selfT > neiT){				//	被扩展的盒子在下面
 			var $_self_topDom = $('.J-model[left=' + selfL + '][bottom='+ selfT +']');
 			$_self_topDom.addClass('needResize');
-			var $_self_topDomH = parseFloat($_self_topDom.attr('height'));
-
-			selfT += $_self_topDomH;
-			return findResizeDom($_nearestDom,$_self_topDom,$_self_topDomH);
-		}else{
-
+			selfT = parseFloat($_self_topDom.attr('top'));
+			return findResizeDomUp($_nearestDom,$_self_topDom,selfT,neiT);
+		}else if(selfT < neiT){
+			var $_nearestDom_top = parseFloat($_nearestDom.attr('top'));
+			var $_nearestDom_left =  parseFloat($_nearestDom.attr('left'));
+			var $_nei_topDom = $('.J-model[left=' + $_nearestDom_left + '][bottom='+ $_nearestDom_top +']');
+			$_nei_topDom.addClass('needResize');
+			neiT = $_nei_topDom.attr('top');
+			return findResizeDomUp($_nei_topDom,$_self,selfT,neiT);
+		}
+	}
+	//	找到所有需要被移动的节点
+	function findResizeDomDown($_nearestDom,$_self,selfB,neiB){
+		neiB = parseFloat($_nearestDom.attr('bottom'));
+		var selfL = parseFloat($_self.attr('left'));
+		//	判断 哪个盒子在上面
+		if(selfB < neiB){				//	被扩展的盒子在上面
+			var $_self_bottomDom = $('.J-model[left=' + selfL + '][top ='+ selfB +']');
+			$_self_bottomDom.addClass('needResize');
+			selfB = parseFloat($_self_bottomDom.attr('bottom'));
+			return findResizeDomDown($_nearestDom,$_self_bottomDom,selfB,neiB);
+		}else if(selfB > neiB){
+			var $_nearestDom_bottom = parseFloat($_nearestDom.attr('bottom'));
+			var $_nearestDom_left =  parseFloat($_nearestDom.attr('left'));
+			var $_nei_bottomDom = $('.J-model[left=' + $_nearestDom_left + '][top='+ $_nearestDom_bottom +']');
+			$_nei_bottomDom.addClass('needResize');
+			neiB = parseFloat($_nei_bottomDom.attr('bottom'));
+			return findResizeDomDown($_nei_bottomDom,$_self,selfB,neiB);
 		}
 	}
 };

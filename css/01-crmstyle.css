@@ -26,6 +26,9 @@
 	opacity:0.6;
 	z-index: 2;
 }
+.addsbtn-tb span{
+	height:100%;
+}
 .addsbtn-lr{
 	left:0px;
 	width:15px;
@@ -49,6 +52,21 @@
 	width:15px;
 	opacity: 0.6;
 	z-index: 2;
+}
+.heighten{
+	bottom:0px;
+	background:#000;
+	height:15px;
+	opacity: 0.6;
+	z-index: 2;
+}
+.heighten:hover{
+	cursor: s-resize;
+}
+.heighten span{
+	height: 100%;
+	margin-top: -2px;
+	color:#FFF;
 }
 .elongate:hover{
 	cursor: e-resize;
