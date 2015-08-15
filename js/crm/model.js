@@ -192,7 +192,7 @@ model.resizeModel = function(){
 		$_nearestDom.addClass('needResize');
 		return $_nearestDom;
 	}
-
+	//	找到最近的相邻节点
 	function findResizeOther($_self){
 		var otherTop = parseFloat($_self.attr('bottom'))		//	邻居的top属性的值
 		var $_otherDom = $('.J-model[top=' + otherTop + ']');		//	相邻的所有
@@ -215,6 +215,8 @@ model.resizeModel = function(){
 		$_nearestDom.addClass('needResize');
 		return $_nearestDom;
 	}
+
+
 	//	找到所有需要被移动的节点(向上)
 	function findResizeDomUp($_nearestDom,$_self,selfT,neiT){
 		var selfL = parseFloat($_self.attr('left'));
