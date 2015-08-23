@@ -290,4 +290,8 @@ model.resizeModel = function(){
 			return findResizeDomRight($_nei_rightDom,$_self,selfR,neiR);
 		}
 	}
+
+	function add_needreseize($_nearestDom,$_self,compair1,compair2){
+
+	}
 };
